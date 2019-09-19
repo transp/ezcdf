@@ -6,10 +6,13 @@ export FC=gfortran
 
 if [ $FC = 'ifort' ]; then
     module load intel/2019.u3
+    export FC=ifort
 elif [ $FC = 'pgf90' ]; then
     module load pgf/19.1
+    export FC=pgf90
 else
     module load gcc/9.1.0
+    export FC=gfortran
 fi
 
 module load szip/2.1.1

@@ -74,7 +74,7 @@ shared:	$(OBJS)
 $(OBJS) :
 #
 %.o: %.f90
-	$(FC) $(FFLAGS) $< -o $@ $(FINCL)
+	$(FC) $(FFLAGS) $< -o $@ $(FLIBS) $(FINCL)
 
 uninstall:
 	@rm -rf $(PREFIX)
