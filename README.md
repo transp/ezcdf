@@ -1,18 +1,7 @@
 # ezcdf
 EZcdf, Easy Interface to netCDF Routine Calls
 
-AUTHORS
-
-- Conceived 7/98 by Sunitinder Sekhon
-- Modified by J. Menard 12/98 to run on Cray C90
-- Completely re-written by C.Ludescher-Furth 2/99 
-- Added complex support (64 and 128 bit) by A. Pletzer 5/01 
-- Added Logicals and reworked interface (Steve Hirshman)
-
-
-CONTACT
-  
-  transp_support@pppl.gov
+CONTACT:  transp_support@pppl.gov
 
 
 REVISION HISTORY
