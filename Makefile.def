@@ -6,7 +6,7 @@ ifeq ($(FC),ifort)
      SLDFLAGS = -shared
      CXX = icc
      CXXFLAGS = -O2 -std=c++11
-     CXXLIBS = -lstdc++ -lgfortran -L$(NETCDF_DIR)/lib -lnetcdff
+     CXXLIBS = -lstdc++ -lgfortran -L$(NETCDFLIB)/lib -lnetcdff
      CXXLDFLAGS =
 
 else ifeq ($(FC),pgf90)
@@ -17,7 +17,7 @@ else ifeq ($(FC),pgf90)
      SLDFLAGS = -shared
      CXX = pgc++
      CXXFLAGS = -O2 -mp -std=c++11
-     CXXLIBS = -lstdc++ -lgfortran -L$(NETCDF_DIR)/lib -lnetcdff
+     CXXLIBS = -lstdc++ -lgfortran -L$(NETCDFLIB)/lib -lnetcdff
      CXXLDFLAGS =
 
 else
@@ -33,5 +33,5 @@ else
      CXXLDFLAGS = 
 endif
 
-FLIBS = -L$(NETCDF_DIR)/lib -lnetcdff
-FINCL = -I$(NETCDF_DIR)/include
+FLIBS = -L$(NETCDFLIB)/lib -lnetcdff
+FINCL = -I$(NETCDFINC)/include

@@ -43,8 +43,11 @@ eztest2:
 	$(CXX) $(CXXLDFLAGS) $@.cc -o $@ $(CXXLIBS) -L$(SRCDIR) -lezcdf $(FLIBS)
 
 checks:
-ifndef NETCDF_DIR
-	$(error NETCDF_DIR is undefined)
+ifndef NETCDFLIB
+	$(error NETCDFLIB is undefined)
+endif
+ifndef NETCDFINC
+	$(error NETCDFINC is undefined)
 endif
 
 install:
