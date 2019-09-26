@@ -1,18 +1,15 @@
 module purge
 module load git/2.21.0
 
-# Specify compiler (gfortran, ifort, pgf90):
-export FC=gfortran
+# Specify compiler (GCC, ICC, PGC):
+export COMPILER=GCC
 
-if [ $FC = 'ifort' ]; then
+if [ $COMPILER = 'ICC' ]; then
     module load intel/2019.u3
-    export FC=ifort
-elif [ $FC = 'pgf90' ]; then
+elif [ $COMPILER = 'PGC' ]; then
     module load pgf/19.1
-    export FC=pgf90
 else
     module load gcc/9.1.0
-    export FC=gfortran
 fi
 
 module load szip/2.1.1
