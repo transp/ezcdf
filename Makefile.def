@@ -1,26 +1,26 @@
-ifeq ($(COMPILER),ifort)
-     FFLAGS = -cpp -c -O2 -stand f08 -real-size 64 -auto-scalar 
+ifeq ($(COMPILER),ICC)
+     FFLAGS = -O2 -stand f08 -real-size 64 -auto-scalar
      LDFLAGS = -cpp
      DFFLAGS = -g -Wall -traceback
      SFFLAGS = -fpic
      SLDFLAGS = -shared
      CXXFLAGS = -O2 -std=c++11
-     CXXLIBS = -lstdc++ -lgfortran -L$(NETCDFLIB)/lib -lnetcdff
+     CXXLIBS = -lstdc++ -lgfortran
      CXXLDFLAGS =
 
-else ifeq ($(COMPILER),pgf90)
-     FFLAGS = -cpp -c -fast -r8
+else ifeq ($(COMPILER),PGC)
+     FFLAGS = -fast -r8
      LDFLAGS = -cpp
      DFFLAGS = -g -traceback -Mbounds
      SFFLAGS = -fpic
      SLDFLAGS = -shared
      CXXFLAGS = -O2 -mp -std=c++11
-     CXXLIBS = -lstdc++ -lgfortran -L$(NETCDFLIB)/lib -lnetcdff
+     CXXLIBS = -lstdc++ -lgfortran
      CXXLDFLAGS =
 
 else
-     COMPILER = gfortran
-     FFLAGS = -cpp -c -O2 -std=f2008 -fdefault-real-8 -ffpe-trap=invalid,zero,overflow
+     COMPILER = GCC
+     FFLAGS = -O2 -std=f2008 -fdefault-real-8 -ffpe-trap=invalid,zero,overflow
      LDFLAGS = -cpp
      DFFLAGS = -Og -Wall
      SFFLAGS = -fpic

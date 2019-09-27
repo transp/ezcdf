@@ -9,7 +9,6 @@ SRCDIR := $(shell pwd)
 PREFIX := $(or $(PREFIX),$(SRCDIR)/build)
 LIBDIR := $(PREFIX)/lib
 INCDIR := $(PREFIX)/include
-MODDIR := $(PREFIX)/mod
 TESTDR := $(PREFIX)/test
 
 LIBAR := libezcdf.a
@@ -37,10 +36,10 @@ $(LIBAR): $(OBJS)
 	@ar r $@ $(OBJS)
 
 eztest:
-	$(FC) $(LDFLAGS) $@.f90 -o $@ -L$(SRCDIR) -lezcdf $(FLIBS)
+	$(FC) $(LDFLAGS) $(FFLAGS) $@.f90 -o $@ -L$(SRCDIR) -lezcdf $(FLIBS)
 
 eztest2:
-	$(CXX) $(CXXLDFLAGS) $@.cc -o $@ $(CXXLIBS) -L$(SRCDIR) -lezcdf $(FLIBS)
+	$(CXX) $(CXXLDFLAGS) $(CXXFLAGS) $@.cc -o $@ $(CXXLIBS) -L$(SRCDIR) -lezcdf $(FLIBS)
 
 checks:
 ifndef NETCDFLIB
@@ -53,10 +52,9 @@ endif
 install:
 	@test -d $(LIBDIR) || mkdir -p $(LIBDIR)
 	@test -d $(INCDIR) || mkdir -p $(INCDIR)
-	@test -d $(MODDIR) || mkdir -p $(MODDIR)
 	@test -d $(TESTDR) || mkdir -p $(TESTDR)
-	@cp -f *.mod $(MODDIR)
-	@cp -f ezcdf.hh $(INCDIR)
+	@cp *.mod $(INCDIR)
+	@cp ezcdf.hh $(INCDIR)
 	@test ! -f $(LIBAR) || cp $(LIBAR) $(LIBDIR)
 	@test ! -f $(LIBSO) || cp $(LIBSO) $(LIBDIR)
 	@cp EZsample.nc $(TESTDR)
@@ -64,20 +62,19 @@ install:
 	@test ! -f $(EXECXX) || cp $(EXECXX) $(TESTDR)
 
 debug:	FFLAGS += $(DFFLAGS)
-debug:	LDFLAGS += $(DFFLAGS)
 debug:	$(LIBAR)
 debug:	eztest
 debug:	eztest2
 
 shared:	FFLAGS += $(SFFLAGS)
-shared:	LDFLAGS += $(SLDFLAGS)
+shared:        LDFLAGS += $(SLDFLAGS)
 shared:	$(OBJS)
 	$(FC) $(LDFLAGS) -o $(LIBSO) $(OBJS)
 
 $(OBJS) :
 #
 %.o: %.f90
-	$(FC) $(FFLAGS) $< -o $@ $(FLIBS) $(FINCL)
+	$(FC) -c $(FFLAGS) $< -o $@ $(FLIBS) $(FINCL)
 
 uninstall:
 	@rm -rf $(PREFIX)
