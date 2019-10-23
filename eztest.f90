@@ -1,10 +1,23 @@
 PROGRAM eztest
 
+  write(6,*) "Sample write and read tests"
   call SampleWrite
   call SampleRead
+
+  write(6,*)
+  write(6,*)
+  write(6,*) "Old syntax write and read tests"
   call OldSyntaxWrite
   call OldSyntaxRead
+
+  write(6,*)
+  write(6,*)
+  write(6,*) "Mixed test"
   call mixNetcdfEzcdf
+
+  write(6,*)
+  write(6,*)
+  write(6,*) "Bigfile test"
   call BigFile
 
 END PROGRAM eztest
@@ -40,7 +53,7 @@ subroutine BigFile
   real :: etime
   real :: tarray(2)
 #endif
-#endif  /* __UNIX */
+#endif
   
   do k = 1, n3
     do j = 1, n2
@@ -69,7 +82,7 @@ subroutine BigFile
   call cdf_define(ncid, 'cr8', cr8)
   call cdf_define(ncid, 'cc8', cc8)
   call cdf_define(ncid, 'cc16', cc16)
-  print *,' writing data ...'
+  write(6,*) ' writing data ...'
   call cdf_write(ncid, 'ai', ai)
   call cdf_write(ncid, 'ar', ar)
   call cdf_write(ncid, 'ar8', ar8)
@@ -96,10 +109,9 @@ subroutine BigFile
 #else
   tic = etime(tarray)
 #endif
- 
-#endif  /* __UNIX */
-!  call cpu_time(tic)
-  print *,' reading data ...'
+#endif
+
+  write(6,*) ' reading data ...'
   call cdf_read(ncid, 'ai', bi)
   call cdf_read(ncid, 'ar', br)
   call cdf_read(ncid, 'ar8', br8)
@@ -110,6 +122,7 @@ subroutine BigFile
   call cdf_read(ncid, 'cr8', dr8)
   call cdf_read(ncid, 'cc8', dc8)
   call cdf_read(ncid, 'cc16', dc16)
+
 #ifdef __UNIX 
 #if __FUJITSU || __OSX || __IBM || __RS6000 
   call cpu_time(tac)    ! not portable
@@ -122,11 +135,10 @@ subroutine BigFile
 #else
   tac = etime(tarray)
 #endif
- 
-#endif  /* __UNIX */
+#endif
 
   call cdf_close(ncid)  
-  print *,' checking data ...'
+  write(6,*) ' checking data ...'
   no_errors = 0
   do k = 1, n3
     do j = 1, n2
@@ -139,15 +151,12 @@ subroutine BigFile
         if(ai(i,j,k) /= bi(i,j,k)) no_errors = no_errors+1
         if(ar(i,j,k) /= br(i,j,k)) no_errors = no_errors+1
         if(ar8(i,j,k) /= br8(i,j,k)) no_errors = no_errors+1
-        if(ac8(i,j,k) /= bc8(i,j,k)) then
-          print *,i,j,k, ac8(i,j,k), bc8(i,j,k)
-          no_errors = no_errors+1
-        endif
+        if(ac8(i,j,k) /= bc8(i,j,k)) no_errors = no_errors+1
       enddo
     enddo
   enddo
-  print *,' cpu time (read): ', tac-tic
-  print *, no_errors, ' errors after BigFile'
+  write(6,*) ' cpu time (read): ', tac-tic
+  write(6,*) no_errors, ' errors after BigFile'
 
 end subroutine BigFile
 
@@ -161,26 +170,29 @@ subroutine mixNetcdfEzcdf
 
   integer ScalarInt
   integer :: ScalarInt_id, ier, fid
-  character(len=NF_MAX_NAME) :: dim_names(3)
 
-  ! write
+  ier = 0
 
+  ! create
   call ezcdf_open(fid, 'EZtest3.nc', 'w', ier)
   call ezcdf_close(fid, ier)
 
   ! read 
-
   call ezcdf_open(fid, 'EZtest.nc', 'r', ier)
+  if(ier.ne.0) then
+    write(6,*) ' ERROR opening NetCDF file: EZtest.nc'
+    flush(6)
+    return
+  end if
   ier = NF_INQ_VARID(fid, 'ScalarInt', ScalarInt_id)
   ier = NF_GET_VAR_INT(fid, ScalarInt_id, ScalarInt)
-  print *,' ScalarInt = ', ScalarInt
+  write(6,*) ' ScalarInt = ', ScalarInt
   call ezcdf_close(fid, ier)
 
 end subroutine mixNetcdfEzcdf
 
 
 subroutine OldSyntaxWrite
-
   use ezcdf
   implicit none
   integer ncid
@@ -188,12 +200,10 @@ subroutine OldSyntaxWrite
   call cdfDefVar(ncid, 'myvar', (/1,1,1/), 'LOG')
   call cdfPutVar(ncid, 'myvar', .TRUE.)
   call cdfCls(ncid)
-
 end subroutine OldSyntaxWrite
 
 
 subroutine OldSyntaxRead
-
   use ezcdf
   implicit none
   integer ncid
@@ -205,9 +215,8 @@ subroutine OldSyntaxRead
   call cdfGetVar(ncid, 'myvar', myvar)
   if(.not. myvar) stop '1 error in OldSyntaxRead'
   call cdfCls(ncid)
-
 end subroutine OldSyntaxRead
-  
+
 
 subroutine SampleWrite
 ! Sample to Write / Read netCDF dataset
@@ -222,12 +231,12 @@ subroutine SampleWrite
   character(len=25)              :: title = "Test of EZcdf Interface"
   character(len=8), dimension(2) :: comment = (/"Written ","02/15/99"/)
   character(len=8), dimension(2) :: comment_a = (/"Written ","10/02/02"/)
-  real (KIND=r8)                 :: scalar = 999.99_r8
+  real(kind=r8)                  :: scalar = 999.99_r8
   integer                        :: scalar_int = 33
   integer,        dimension(5)   :: ival = (/1,2,3,4,5/)
   logical,        dimension(4)   :: lval = (/.true.,.false.,.false., .true./)
   logical,        dimension(4,2) :: lval2
-  real (KIND=r8), dimension(3,4) :: dval =    &
+  real(kind=r8), dimension(3,4) :: dval =    &
        reshape ( (/11.1_r8, 12.2_r8, 13.3_r8, &
        21.1_r8, 22.2_r8, 23.3_r8,             &
        31.1_r8, 32.2_r8, 33.3_r8,             &
@@ -245,8 +254,10 @@ subroutine SampleWrite
        8.1, 8.2, 8.3  &
        /),            &
        (/3,4,2/))
-  complex(KIND=r8) :: c16val_0,  c16val_1(5), c16val_2(3,4), c16val_3(3,4,2)
-  complex(KIND=r4) :: c8val_0,  c8val_1(5), c8val_2(3,4), c8val_3(3,4,2)
+  !complex(KIND=r8) :: c16val_0
+  complex(KIND=r8) :: c16val_1(5), c16val_2(3,4), c16val_3(3,4,2)
+  !complex(KIND=r4) :: c8val_0
+  complex(KIND=r4) :: c8val_1(5), c8val_2(3,4), c8val_3(3,4,2)
   integer :: intarray(-3:2) = (/ -3, -2, -1, 0, 1, 2/)
 
   ! to define Variables
@@ -259,7 +270,7 @@ subroutine SampleWrite
   ! Create File
   call cdf_open(ncid,'EZtest.nc','w',ier)
   if (ier .ne. 0) then
-    print *,'Error creating file'
+    write(6,*) 'Error creating file'
     stop
   end if
   ! Define Variables
@@ -303,9 +314,9 @@ subroutine SampleWrite
   dimlens(3)=2
   call cdf_define(ncid,'3D-R4',dimlens,'R4')
   ! Complex
-  dimlens = 0
-  call cdf_define(ncid,'Scalar_C16',dimlens,'C16')
-  call cdf_define(ncid,'Scalar_C8',dimlens,'C8')
+  !dimlens = 0
+  !call cdf_define(ncid,'Scalar_C16',dimlens,'C16')
+  !call cdf_define(ncid,'Scalar_C8',dimlens,'C8')
   dimlens = (/ 5, 1, 1 /)
   call cdf_define(ncid,'1D_C16',dimlens,'C16')
   call cdf_define(ncid,'1D_C8',dimlens,'C8')
@@ -317,11 +328,11 @@ subroutine SampleWrite
   call cdf_define(ncid,'3D_C16',dimlens,'C16')
   call cdf_define(ncid,'3D_C8',dimlens,'C8')
 
-  c16val_0 = scalar * (1._r8, 2._r8)
+  !c16val_0 = scalar * (1._r8, 2._r8)
   c16val_1 = ival * (1._r8, 2._r8)
   c16val_2 = dval * (1._r8, 2._r8)
   c16val_3 = fval * (1._r8, 2._r8)
-  c8val_0 = scalar * (3._r4, 4._r4)
+  !c8val_0 = scalar * (3._r4, 4._r4)
   c8val_1 = ival * (3._r4, 4._r4)
   c8val_2 = dval * (3._r4, 4._r4)
   c8val_3 = fval * (3._r4, 4._r4)
@@ -351,11 +362,11 @@ subroutine SampleWrite
   call cdf_write(ncid,'1D-INT',ival)
   call cdf_write(ncid,'1D-INTa',ival)
   call cdf_write(ncid,'1d_array_with_indexing_starting_at_-3', intarray, ier)
-  call cdf_write(ncid,'Scalar_C16',c16val_0)
+  !call cdf_write(ncid,'Scalar_C16',c16val_0)
   call cdf_write(ncid,'1D_C16',c16val_1)
   call cdf_write(ncid,'2D_C16',c16val_2)
   call cdf_write(ncid,'3D_C16',c16val_3)
-  call cdf_write(ncid,'Scalar_C8',C8val_0)
+  !call cdf_write(ncid,'Scalar_C8',C8val_0)
   call cdf_write(ncid,'1D_C8',C8val_1)
   call cdf_write(ncid,'2D_C8',C8val_2)
   call cdf_write(ncid,'3D_C8',C8val_3)
@@ -365,10 +376,7 @@ subroutine SampleWrite
   call cdf_write(ncid,'ScalarInt',scalar_int)
   call cdf_write(ncid,'ScalarInta',scalar_int)
 
-  call cdf_close(ncid ,ier)
-  !
-  ! Now read back
-  call SampleRead
+  call cdf_close(ncid,ier)
 
 END subroutine SampleWrite
 
@@ -389,13 +397,10 @@ SUBROUTINE SampleRead
   character(len=1) :: a
   character(len=25)                           :: title, title_a
   character(len=8), dimension(2)              :: comment, comment_a
-  complex(KIND=r8) :: c16val_0
-  complex(KIND=r8), allocatable :: c16val_1(:), c16val_2(:,:), &
-       c16val_3(:,:,:)
-  complex(KIND=r4) :: c8val_0
-  complex(KIND=r4), allocatable :: c8val_1(:), c8val_2(:,:), &
-       c8val_3(:,:,:)
-  integer, dimension(-3:2) :: intarray
+  !complex(KIND=r8) :: c16val_0
+  complex(KIND=r8), allocatable :: c16val_1(:), c16val_2(:,:), c16val_3(:,:,:)
+  !complex(KIND=r4) :: c8val_0
+  complex(KIND=r4), allocatable :: c8val_1(:), c8val_2(:,:), c8val_3(:,:,:)
   ! Local
   integer                 :: ncid
   integer                 :: ierror
@@ -408,7 +413,7 @@ SUBROUTINE SampleRead
   !----------------------------------------------------------------
 
   ner = 0
-  print "(/'Read again:'/)"
+  write(6,*) "Read EZtest,nc"
   ! Open File
   call cdf_open(ncid,'EZtest.nc','r')
   ! Inquire dimensions and type of Variable
@@ -416,13 +421,13 @@ SUBROUTINE SampleRead
   call cdf_inquire(ncid,'1D-INT',dimlens,ier=ierror)  
   ALLOCATE( ival(dimlens(1)), STAT=ierror )
   call cdf_getatt(ncid, '1D-INT', longname, units, ier)
-  print *,' -- 1D-INT: ',trim(longname), ' units=', trim(units), ' ier=', ier
+  write(6,*) ' -- 1D-INT: ',trim(longname), ' units=', trim(units), ' ier=', ier
   call cdf_inquire(ncid, '1d_array_with_indexing_starting_at_-3', dimlens, xtype)
-  print *,' variable 1d_array_with_indexing_starting_at_-3 has dimlens=', dimlens, ' and type ', xtype
+  write(6,*) ' variable 1d_array_with_indexing_starting_at_-3 has dimlens=', dimlens, ' and type ', xtype
   ! 1D-LOG
   call cdf_inquire(ncid,'1D-LOG',dimlens,ier=ierror)
   call cdf_getatt(ncid, '1D-LOG', longname, units)
-  print *,' -- 1D-LOG: ',trim(longname), ' units=', trim(units)
+  write(6,*) ' -- 1D-LOG: ',trim(longname), ' units=', trim(units)
   ALLOCATE( lval(dimlens(1)), STAT=ierror)
   ! 2D-LOG
   call cdf_inquire(ncid,'2D-LOG',dimlens,ier=ierror)
@@ -438,8 +443,8 @@ SUBROUTINE SampleRead
   ! Comment
   call cdf_inquire(ncid,'Comment',dimlens)
   ! Complex
-  call cdf_inquire(ncid,'Scalar_C16',dimlens)
-  print "('Scalar_C16 dims=',3I4, 2x, a)", dimlens, xtype
+  !call cdf_inquire(ncid,'Scalar_C16',dimlens)
+  !print "('Scalar_C16 dims=',3I4, 2x, a)", dimlens, xtype
   call cdf_inquire(ncid,'1D_C16',dimlens,xtype)
   print "('1D_C16 dims=',3I4, 2x, a)", dimlens, xtype
   allocate(c16val_1(dimlens(1)))
@@ -449,7 +454,7 @@ SUBROUTINE SampleRead
   print "('2D_C16 dims=',3I4, 2x, a)", dimlens, xtype
   allocate(c16val_2(dimlens(1), dimlens(2)))
   call cdf_getatt(ncid, '2D_C16', longname, units, ier)
-  print *,' -- 2D_C16: ',trim(longname), ' units=', trim(units), ' ier=', ier
+  write(6,*) ' -- 2D_C16: ',trim(longname), ' units=', trim(units), ' ier=', ier
   call cdf_inquire(ncid,'2D_C8',dimlens)
   allocate(c8val_2(dimlens(1), dimlens(2)))
   call cdf_inquire(ncid,'3D_C16',dimlens,xtype)
@@ -459,33 +464,33 @@ SUBROUTINE SampleRead
   allocate(c8val_3(dimlens(1), dimlens(2), dimlens(3)))
   !
   ! Get data
-  call cdf_read(ncid, 'a', a)
+  call cdf_read(ncid,'a',a)
   call cdf_read(ncid,'Title',title,ierror)             ! ierror = optional
   call cdf_read(ncid,'Title-A',title_a,ierror)    
-  print *,'Title:   ',title
-  print *,'Title-A: ',title_a
+  write(6,*) 'Title:   ',title
+  write(6,*) 'Title-A: ',title_a
   call cdf_read(ncid,'Comment',comment)
-  print *,'Comment(1): ',comment(1)
-  print *,'Comment(2): ',comment(2)
+  write(6,*) 'Comment(1): ',comment(1)
+  write(6,*) 'Comment(2): ',comment(2)
   call cdf_read(ncid,'Comment-A',comment_a)
-  print *,'Comment-A(1): ',comment_a(1)
-  print *,'Comment-A(2): ',comment_a(2)
+  write(6,*) 'Comment-A(1): ',comment_a(1)
+  write(6,*) 'Comment-A(2): ',comment_a(2)
   call cdf_read(ncid,'Scalar',scalar)
-  print *,'Scalar:  ',scalar
+  write(6,*) 'Scalar:  ',scalar
   call cdf_read(ncid,'1D-INT',ival)
-  print *,'1d-INT:  ',ival
+  write(6,*) '1d-INT:  ',ival
   call cdf_read(ncid,'1D-LOG',lval)
-  print *,'1d-LOG:  ',lval
+  write(6,*) '1d-LOG:  ',lval
   call cdf_read(ncid,'2D-LOG',lval2)
-  print *,'2d-LOG:  ',lval2
+  write(6,*) '2d-LOG:  ',lval2
   call cdf_read(ncid,'2D-R8',dval)
   call cdf_read(ncid,'2D-R8a',dval_a)
   call cdf_read(ncid,'3D-R4',fval)
-  call cdf_read(ncid,'Scalar_C16',c16val_0)
+  !call cdf_read(ncid,'Scalar_C16',c16val_0)
   call cdf_read(ncid,'1D_C16',c16val_1)
   call cdf_read(ncid,'2D_C16',c16val_2)
   call cdf_read(ncid,'3D_C16',c16val_3)
-  call cdf_read(ncid,'Scalar_C8',C8val_0)
+  !call cdf_read(ncid,'Scalar_C8',C8val_0)
   call cdf_read(ncid,'1D_C8',C8val_1)
   call cdf_read(ncid,'2D_C8',C8val_2)
   call cdf_read(ncid,'3D_C8',C8val_3)
@@ -493,22 +498,22 @@ SUBROUTINE SampleRead
   call cdf_read(ncid,'ScalarInt',scalarInt)
   call cdf_read(ncid,'ScalarInta',scalarInta)
 
-  print *,' Scalar Int = ', scalarInt, ' Alternative form = ', scalarInta
+  write(6,*) ' Scalar Int = ', scalarInt, ' Alternative form = ', scalarInta
 
-  print *,'2D-R8:'
+  write(6,*) '2D-R8:'
   do i=1,4
-    print *,dval(:,i)
+    write(6,*) dval(:,i)
   end do
   print *,'2D-R8a:'
   do i=1,4
-    print *,dval_a(:,i)
+    write(6,*) dval_a(:,i)
   end do
   print *,'3D-R4:'
   do i=1,2
-    print *,(fval(:,j,i),j=1,4)
+    write(6,*) (fval(:,j,i),j=1,4)
   end do
 
-  if(c16val_0 /= scalar * (1._r8, 2._r8)) ner = ner + 1
+  !if(c16val_0 /= scalar * (1._r8, 2._r8)) ner = ner + 1
 
   do i = 1, size(ival)
     if(c16val_1(i) /= ival(i) * (1._r8, 2._r8)) ner = ner + 1
@@ -527,6 +532,8 @@ SUBROUTINE SampleRead
       enddo
     enddo
   enddo
-  print *,ner,' errors occurred while reading in complex data'
-      
+  write(6,*) ner,' errors occurred while reading in complex data'
+
+  call cdf_close(ncid,ier)
+
 END SUBROUTINE SampleRead

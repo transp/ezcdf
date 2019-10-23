@@ -14,38 +14,39 @@ MODULE ezcdf_GenPut
   !
   ! added support (ap) Wed May 16 15:06:34 EDT 2001
   PUBLIC :: cdfw_3i, cdfw_3l, cdfw_3d, cdfw_3c16, cdfw_3f, cdfw_3c8,  &
-       & cdfw_2i, cdfw_2l, cdfw_2d, cdfw_2c16, cdfw_2f, cdfw_2c8, cdfw_2c, &
-       & cdfw_1i, cdfw_1l, cdfw_1d, cdfw_1c16, cdfw_1f, cdfw_1c8, cdfw_1c, &
-       & cdfw_0i, cdfw_0l, cdfw_0d, cdfw_0c16, cdfw_0f, cdfw_0c8,          &
-       & cdfPutVar, cdf_write
+       cdfw_2i, cdfw_2l, cdfw_2d, cdfw_2c16, cdfw_2f, cdfw_2c8, cdfw_2c, &
+       cdfw_1i, cdfw_1l, cdfw_1d, cdfw_1c16, cdfw_1f, cdfw_1c8, cdfw_1c, &
+       cdfw_0i, cdfw_0l, cdfw_0d, cdfw_0c16, cdfw_0f, cdfw_0c8,          &
+       cdfPutVar, cdf_write
 
   ! cdf_write is an alias of cdfPutVar (required by ifc compiler)
   INTERFACE cdf_write
-     MODULE PROCEDURE cdfw_3i, cdfw_3l, cdfw_3d, cdfw_3c16, cdfw_3f, cdfw_3c8, &
-          cdfw_2i, cdfw_2l, cdfw_2d, cdfw_2c16, cdfw_2f, cdfw_2c8, cdfw_2c, &
-          cdfw_1i, cdfw_1l, cdfw_1d, cdfw_1c16, cdfw_1f, cdfw_1c8, cdfw_1c, &
-          cdfw_0i, cdfw_0l, cdfw_0d, cdfw_0c16, cdfw_0f, cdfw_0c8
+    MODULE PROCEDURE cdfw_3i, cdfw_3l, cdfw_3d, cdfw_3c16, cdfw_3f, cdfw_3c8, &
+         cdfw_2i, cdfw_2l, cdfw_2d, cdfw_2c16, cdfw_2f, cdfw_2c8, cdfw_2c, &
+         cdfw_1i, cdfw_1l, cdfw_1d, cdfw_1c16, cdfw_1f, cdfw_1c8, cdfw_1c, &
+         cdfw_0i, cdfw_0l, cdfw_0d, cdfw_0c16, cdfw_0f, cdfw_0c8
   END INTERFACE
+
   ! same as above (Intel compiler does not handle well aliases)
   INTERFACE cdfPutVar
-     MODULE PROCEDURE cdfw_3i, cdfw_3l, cdfw_3d, cdfw_3c16, cdfw_3f, cdfw_3c8, &
-          cdfw_2i, cdfw_2l, cdfw_2d, cdfw_2c16, cdfw_2f, cdfw_2c8, cdfw_2c, &
-          cdfw_1i, cdfw_1l, cdfw_1d, cdfw_1c16, cdfw_1f, cdfw_1c8, cdfw_1c, &
-          cdfw_0i, cdfw_0l, cdfw_0d, cdfw_0c16, cdfw_0f, cdfw_0c8
+    MODULE PROCEDURE cdfw_3i, cdfw_3l, cdfw_3d, cdfw_3c16, cdfw_3f, cdfw_3c8, &
+         cdfw_2i, cdfw_2l, cdfw_2d, cdfw_2c16, cdfw_2f, cdfw_2c8, cdfw_2c, &
+         cdfw_1i, cdfw_1l, cdfw_1d, cdfw_1c16, cdfw_1f, cdfw_1c8, cdfw_1c, &
+         cdfw_0i, cdfw_0l, cdfw_0d, cdfw_0c16, cdfw_0f, cdfw_0c8
   END INTERFACE
 
-  PUBLIC :: cdfDefVar, cdf_define,                                          &
-       & cdfd_3i, cdfd_3l, cdfd_3d, cdfd_3c16, cdfd_3f, cdfd_3c8,          &
-       & cdfd_2i, cdfd_2l, cdfd_2d, cdfd_2c16, cdfd_2f, cdfd_2c8, cdfd_2c, &
-       & cdfd_1i, cdfd_1l, cdfd_1d, cdfd_1c16, cdfd_1f, cdfd_1c8, cdfd_1c, &
-       & cdfd_0i, cdfd_0l, cdfd_0d, cdfd_0c16, cdfd_0f, cdfd_0c8
+  PUBLIC :: cdfDefVar, cdf_define,                                       &
+       cdfd_3i, cdfd_3l, cdfd_3d, cdfd_3c16, cdfd_3f, cdfd_3c8,          &
+       cdfd_2i, cdfd_2l, cdfd_2d, cdfd_2c16, cdfd_2f, cdfd_2c8, cdfd_2c, &
+       cdfd_1i, cdfd_1l, cdfd_1d, cdfd_1c16, cdfd_1f, cdfd_1c8, cdfd_1c, &
+       cdfd_0i, cdfd_0l, cdfd_0d, cdfd_0c16, cdfd_0f, cdfd_0c8
 
   INTERFACE cdf_define
-     MODULE PROCEDURE cdfDefVar,                                            &
-          cdfd_3i, cdfd_3l, cdfd_3d, cdfd_3c16, cdfd_3f, cdfd_3c8,          &
-          cdfd_2i, cdfd_2l, cdfd_2d, cdfd_2c16, cdfd_2f, cdfd_2c8, cdfd_2c, &
-          cdfd_1i, cdfd_1l, cdfd_1d, cdfd_1c16, cdfd_1f, cdfd_1c8, cdfd_1c, &
-          cdfd_0i, cdfd_0l, cdfd_0d, cdfd_0c16, cdfd_0f, cdfd_0c8
+    MODULE PROCEDURE cdfDefVar,                                            &
+         cdfd_3i, cdfd_3l, cdfd_3d, cdfd_3c16, cdfd_3f, cdfd_3c8,          &
+         cdfd_2i, cdfd_2l, cdfd_2d, cdfd_2c16, cdfd_2f, cdfd_2c8, cdfd_2c, &
+         cdfd_1i, cdfd_1l, cdfd_1d, cdfd_1c16, cdfd_1f, cdfd_1c8, cdfd_1c, &
+         cdfd_0i, cdfd_0l, cdfd_0d, cdfd_0c16, cdfd_0f, cdfd_0c8
   END INTERFACE
 
   PRIVATE
