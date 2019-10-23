@@ -1,7 +1,7 @@
 ifeq ($(COMPILER),ICC)
      FFLAGS = -O2 -stand f08 -real-size 64 -auto-scalar
      LDFLAGS = -cpp
-     DFFLAGS = -g -Wall -traceback
+     DFFLAGS = -g -traceback -check all -warn all
      SFFLAGS = -fpic
      SLDFLAGS = -shared
      CXXFLAGS = -O2 -std=c++11
@@ -19,7 +19,7 @@ else ifeq ($(COMPILER),PGC)
      CXXLDFLAGS =
 
 else
-     COMPILER = GCC
+     COMPILER = gfortran
      FFLAGS = -O2 -std=f2008 -fdefault-real-8 -ffpe-trap=invalid,zero,overflow
      LDFLAGS = -cpp
      DFFLAGS = -Og -Wall
