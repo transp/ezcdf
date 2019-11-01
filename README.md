@@ -1,10 +1,17 @@
 # ezcdf
+
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/transp/ezcdf?include_prereleases)
+
+## About
+
 EZcdf, Easy Interface to netCDF Routine Calls
 
-CONTACT:  transp_support@pppl.gov
+## Contact
+
+transp_support@pppl.gov
 
 
-REVISION HISTORY
+## History
 
 Feb 1999   - Created  
 April 2000 - A. Pletzer: Added R4  
@@ -13,11 +20,10 @@ May 2001   - A. Pletzer: Added C8 and C16
 Oct 2002   - S. Hirshman: added LOG and reworked interface  
 Sept 2019  - Moved to github
 
-
 *** EZCDF is targeted for deprecation as of 2019/09 ***
 
 
-1. CONTENTS:
+## Contents
 
 Makefile:      GNU make should be used  
 Makefile.def   Definitions for the Makefile
@@ -34,7 +40,7 @@ Test programs:
    eztest2.cc, ezcdf.hh: This is an example how to call ezcdf from a C++ program.
 
 
-2. BUILDING INSTRUCTIONS:
+## Build
 
 NOTE:  For linking the netCDF library is required.
 
@@ -49,7 +55,7 @@ make clobber     -- will run clean and remove the libs and test programs
 The Makefile.def is set-up for compiling with the GNU, Intel, and Portland group compilers.
 
 
-3. TESTING:
+## Test
 
 ./eztest
 eztest will write and re-read a simple netCDF file EZtest.nc and write/re-read a large file, bigFile.nc and check for errors. The contents of EZtest.nc should be the same as of EZsample.nc, which is included in the distribution.
@@ -58,7 +64,7 @@ eztest will write and re-read a simple netCDF file EZtest.nc and write/re-read a
 C++ version of eztest
 
 
-4. FINAL INSTALLATION:
+## Install
 
 Final installation will be put in a location specified by the PREFIX environment variable. The directory './build/' will be used if not specified. Installation done with:
 
