@@ -1,7 +1,47 @@
 # Simple makefile to build libezcdf.a or libezcdf.so
 
-# Include compile options
-include Makefile.def
+SHELL:=/bin/bash
+
+FLIBS =
+FINCL =
+
+ifneq (,$(shell which nf-config))
+        NETCDF_FORTRAN_HOME = `nf-config --prefix`
+        NETCDF_FLAGS = -D_NETCDF `nf-config --fflags`
+        FINCL += -I`nf-config --includedir`
+        FLIBS += `nf-config --flibs`
+endif
+
+ifneq (,$(findstring icc, $(CC)))
+        COMPILER=icc
+        FFLAGS = -cpp -O2 -stand f08 -real-size 64 -auto-scalar $(NETCDF_FLAGS)
+        LDFLAGS = -cpp
+        DFFLAGS = -g -traceback -check all -warn all
+        SFFLAGS = -fpic
+        SLDFLAGS = -shared
+        CXXFLAGS = -O2 -std=c++11 $(NETCDF_FLAGS)
+        CXXLIBS = -lifcore
+
+else ifeq ($(COMPILER),pgcc-llvm)
+        FFLAGS = -cpp -fast -r8 $(NETCDF_FLAGS) -D_PGC
+        LDFLAGS = -cpp
+        DFFLAGS = -g -traceback -Mbounds
+        SFFLAGS = -fpic
+        SLDFLAGS = -shared
+        CXXFLAGS = -O2 -mp -std=c++11 $(NETCDF_FLAGS)
+        CXXLIBS = -lstdc++ -lgfortran
+        CXXLDFLAGS =
+
+else
+        COMPILER=gfortran
+        FFLAGS = -cpp -dM -O2 -std=f2008 -fdefault-real-8 -ffpe-trap=invalid,zero,overflow $(NETCDF_FLAGS)
+        LDFLAGS = -cpp
+        DFFLAGS = -Og -Wall
+        SFFLAGS = -fpic
+        SLDFLAGS = -shared
+        CXXFLAGS = -O2 -std=c++11 $(NETCDF_FLAGS)
+        CXXLIBS = -lstdc++ -lgfortran
+endif
 
 # Define directories and library names
 SRCDIR := $(shell pwd)
@@ -28,9 +68,9 @@ SRCS :=	ezcdf_inqvar.f90 \
 OBJS :=	$(SRCS:.f90=.o)
 
 
-.PHONY: checks clean clobber debug install shared
+.PHONY: clean clobber debug shared install uninstall
 
-all:	checks $(LIBAR) eztest eztest2
+all:	$(LIBAR) eztest eztest2
 
 $(LIBAR): $(OBJS)
 	@ar r $@ $(OBJS)
@@ -40,14 +80,6 @@ eztest:
 
 eztest2:
 	$(CXX) $(CXXLDFLAGS) $(CXXFLAGS) $@.cc -o $@ $(CXXLIBS) -L$(SRCDIR) -lezcdf $(FLIBS)
-
-checks:
-ifndef NETCDFLIB
-	$(error NETCDFLIB is undefined)
-endif
-ifndef NETCDFINC
-	$(error NETCDFINC is undefined)
-endif
 
 install:
 	@test -d $(LIBDIR) || mkdir -p $(LIBDIR)
@@ -67,12 +99,12 @@ debug:	eztest
 debug:	eztest2
 
 shared:	FFLAGS += $(SFFLAGS)
-shared:        LDFLAGS += $(SLDFLAGS)
+shared: LDFLAGS += $(SLDFLAGS)
 shared:	$(OBJS)
 	$(FC) $(LDFLAGS) -o $(LIBSO) $(OBJS)
 
 $(OBJS) :
-#
+
 %.o: %.f90
 	$(FC) -c $(FFLAGS) $< -o $@ $(FLIBS) $(FINCL)
 
