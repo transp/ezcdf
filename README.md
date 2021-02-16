@@ -44,8 +44,6 @@ Test programs:
 
 NOTE:  For linking the netCDF library is required.
 
-The location of netCDF Fortran library should be specified with NETCDF_DIR. See the example bash configuration file used at PPPL (pppl-bashrc) and the Makefile.def file.
-
 make             -- will build libezcdf.a and the test programs  
 make debug       -- will build a debug version of libezcdf.a  
 make shared      -- will build a shared library, libezcdf.so  
