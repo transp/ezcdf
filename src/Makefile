@@ -46,10 +46,11 @@ endif
 # Define directories and library names
 SRCDIR := $(shell pwd)
 
-PREFIX := $(or $(PREFIX),$(SRCDIR)/build)
+PREFIX := $(or $(PREFIX),$(SRCDIR)/../)
 LIBDIR := $(PREFIX)/lib
 INCDIR := $(PREFIX)/include
-TESTDR := $(PREFIX)/test
+MODDIR := $(PREFIX)/mod
+BINDIR := $(PREFIX)/bin
 
 LIBAR := libezcdf.a
 LIBSO := libezcdf.so
@@ -84,14 +85,14 @@ eztest2:
 install:
 	@test -d $(LIBDIR) || mkdir -p $(LIBDIR)
 	@test -d $(INCDIR) || mkdir -p $(INCDIR)
-	@test -d $(TESTDR) || mkdir -p $(TESTDR)
-	@cp *.mod $(INCDIR)
+	@test -d $(MODDIR) || mkdir -p $(MODDIR)
+	@test -d $(BINDIR) || mkdir -p $(BINDIR)
 	@cp ezcdf.hh $(INCDIR)
+	@cp *.mod $(MODDIR)
 	@test ! -f $(LIBAR) || cp $(LIBAR) $(LIBDIR)
 	@test ! -f $(LIBSO) || cp $(LIBSO) $(LIBDIR)
-	@cp EZsample.nc $(TESTDR)
-	@test ! -f $(EXEF90) || cp $(EXEF90) $(TESTDR)
-	@test ! -f $(EXECXX) || cp $(EXECXX) $(TESTDR)
+	@test ! -f $(EXEF90) || cp $(EXEF90) $(BINDIR)
+	@test ! -f $(EXECXX) || cp $(EXECXX) $(BINDIR)
 
 debug:	FFLAGS += $(DFFLAGS)
 debug:	$(LIBAR)
@@ -109,7 +110,10 @@ $(OBJS) :
 	$(FC) -c $(FFLAGS) $< -o $@ $(FLIBS) $(FINCL)
 
 uninstall:
-	@rm -rf $(PREFIX)
+	@rm -rf $(LIBDIR)
+	@rm -rf $(INCDIR)
+	@rm -rf $(MODDIR)
+	@rm -rf $(BINDIR)
 
 clean:
 	@rm -f *~
