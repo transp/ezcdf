@@ -18,7 +18,8 @@ jobs:
         export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
         cd src
         make
+        make install
     - name: eztest
-      run: ./eztest > eztest.ref && diff -w eztest.ref ../ref/eztest/eztest.ref
+      run: bin/eztest > eztest.ref && diff -w eztest.ref ref/eztest/eztest.ref
     - name: eztest2
-      run: ./eztest2 > eztest2.ref && diff -w eztest2.ref ../ref/eztest2/eztest2.ref
+      run: bin/eztest2 > eztest2.ref && diff -w eztest2.ref ref/eztest2/eztest2.ref
