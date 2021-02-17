@@ -6,8 +6,7 @@ FLIBS =
 FINCL =
 
 ifneq (,$(shell which nf-config))
-        NETCDF_FORTRAN_HOME = `nf-config --prefix`
-        NETCDF_FLAGS = -D_NETCDF `nf-config --fflags`
+        NETCDF_FLAGS = `nf-config --fflags`
         FINCL += -I`nf-config --includedir`
         FLIBS += `nf-config --flibs`
 endif
