@@ -19,6 +19,6 @@ jobs:
         cd src
         make
     - name: eztest
-      run: ./eztest > eztest.out && diff -w eztest.out ../ref/eztest/eztest.out
+      run: ./eztest > eztest.ref && diff -w eztest.ref ../ref/eztest/eztest.ref
     - name: eztest2
-      run: ./eztest2 > eztest2.out && diff -w eztest2.out ../ref/eztest2/eztest2.out
+      run: ./eztest2 > eztest2.ref && diff -w eztest2.ref ../ref/eztest2/eztest2.ref
