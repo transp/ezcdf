@@ -1,8 +1,0 @@
-bin
-include
-mod
-lib
-*.o
-*.mod
-*.a
-*~
